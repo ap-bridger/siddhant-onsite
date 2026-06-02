@@ -1,16 +1,45 @@
-import { greetings } from "@/server/modules/greet/api";
+import { getPendingTransactions } from "@/server/modules/accounts/api";
+import {
+  getClientCategories,
+  getClientVendors,
+} from "@/server/modules/clients/api";
 import { createSchema, createYoga } from "graphql-yoga";
 
 const { handleRequest } = createYoga({
   schema: createSchema({
     typeDefs: /* GraphQL */ `
+      type Category {
+        id: ID!
+        name: String!
+      }
+
+      type Vendor {
+        id: ID!
+        name: String!
+      }
+
+      type Transaction {
+        id: ID!
+        qboId: String
+        date: String!
+        description: String!
+        amountCents: Int!
+      }
+
       type Query {
-        greetings: String
+        clientCategories(clientId: ID!): [Category!]!
+        clientVendors(clientId: ID!): [Vendor!]!
+        accountPending(bankAccountId: ID!): [Transaction!]!
       }
     `,
     resolvers: {
       Query: {
-        greetings,
+        clientCategories: (_parent: unknown, args: { clientId: string }) =>
+          getClientCategories(args.clientId),
+        clientVendors: (_parent: unknown, args: { clientId: string }) =>
+          getClientVendors(args.clientId),
+        accountPending: (_parent: unknown, args: { bankAccountId: string }) =>
+          getPendingTransactions(args.bankAccountId),
       },
     },
   }),
@@ -22,8 +51,13 @@ const { handleRequest } = createYoga({
   fetchAPI: { Response },
 });
 
-export {
-  handleRequest as GET,
-  handleRequest as POST,
-  handleRequest as OPTIONS,
-};
+// Wrap the Yoga handler so the exported route handlers match Next.js's
+// expected signature. Yoga's `handleRequest` second argument
+// (`Partial<ServerAdapterInitialContext>`) is incompatible with the
+// `{ params }` context Next.js's route-type validation expects, so we only
+// forward the request and pass an empty server context.
+function handler(request: Request) {
+  return handleRequest(request, {});
+}
+
+export { handler as GET, handler as POST, handler as OPTIONS };
