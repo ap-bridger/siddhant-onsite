@@ -1,16 +1,24 @@
-export interface TransactionCategory {
-  category: string;
-  amount: number;
+export interface Account {
+  id: string;
+  name: string;
+}
+
+export interface PredictedCategory {
+  id: string;
+  account_id: string;
+  amount_cents: number;
+  transaction_id: string;
 }
 
 export interface Transaction {
   id: string;
-  date: string; // YYYY-MM-DD
+  bank_account_id: string;
+  date: string; // ISO 8601 datetime
   description: string;
-  amount: number;
-  pair?: string;
+  amount_cents: number;
+  pair_id?: string;
   vendor?: string;
-  qboid: string;
-  match?: string;
-  categories?: TransactionCategory[];
+  qbo_id?: string;
+  match_id?: string;
+  categories?: PredictedCategory[];
 }
