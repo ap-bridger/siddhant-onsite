@@ -1,4 +1,5 @@
 import {
+  createVendor,
   getClientCategories,
   getClientVendors,
   getPendingTransactions,
@@ -41,6 +42,10 @@ const { handleRequest } = createYoga({
         clientVendors(clientId: ID!): [Vendor!]!
         accountPending(clientId: ID!): [Transaction!]!
       }
+
+      type Mutation {
+        createVendor(clientId: ID!, name: String!): Vendor!
+      }
     `,
     resolvers: {
       Query: {
@@ -50,6 +55,12 @@ const { handleRequest } = createYoga({
           getClientVendors(args.clientId),
         accountPending: (_parent: unknown, args: { clientId: string }) =>
           getPendingTransactions(args.clientId),
+      },
+      Mutation: {
+        createVendor: (
+          _parent: unknown,
+          args: { clientId: string; name: string },
+        ) => createVendor(args.clientId, args.name),
       },
     },
   }),
