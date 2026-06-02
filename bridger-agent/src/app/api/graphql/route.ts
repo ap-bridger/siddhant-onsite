@@ -1,18 +1,13 @@
-import { greetings } from "@/server/modules/greet/api";
 import { createSchema, createYoga } from "graphql-yoga";
 
 const { handleRequest } = createYoga({
   schema: createSchema({
     typeDefs: /* GraphQL */ `
       type Query {
-        greetings: String
+        _empty: String
       }
     `,
-    resolvers: {
-      Query: {
-        greetings,
-      },
-    },
+    resolvers: {},
   }),
 
   // While using Next.js file convention for routing, we need to configure Yoga to use the correct endpoint
