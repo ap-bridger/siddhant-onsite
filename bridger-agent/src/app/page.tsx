@@ -104,11 +104,11 @@ export default function Home() {
     []
   );
 
-      return (
+  return (
     <div className="h-screen flex flex-col p-8 sm:p-12 font-[family-name:var(--font-geist-sans)]">
       <main className="max-w-6xl w-full mx-auto flex flex-col min-h-0 flex-1 gap-4">
         <h1 className="text-2xl font-bold shrink-0">Transactions</h1>
-                <TransactionsTable
+        <TransactionsTable
           transactions={transactions}
           cellRenderers={cellRenderers}
           onSave={handleSave}

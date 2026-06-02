@@ -53,13 +53,22 @@ model Transaction {
   match_id        String?
   vendor          String?
   qbo_id          String?
+  status_id       String
 
-  bankAccount BankAccount @relation(fields: [bank_account_id], references: [id])
+  bankAccount BankAccount       @relation(fields: [bank_account_id], references: [id])
+  status      TransactionStatus @relation(fields: [status_id], references: [id])
 
   // Self-relation: a transaction may be paired with another transaction.
   pair       Transaction?        @relation("TransactionPair", fields: [pair_id], references: [id])
   pairedBy   Transaction?        @relation("TransactionPair")
   categories PredictedCategory[]
+}
+
+model TransactionStatus {
+  id   String @id @default(cuid())
+  name String @unique
+
+  transactions Transaction[]
 }
 
 model PredictedCategory {
