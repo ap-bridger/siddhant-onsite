@@ -29,6 +29,8 @@ const VENDOR_NAMES = [
   "Uber",
 ];
 
+const STATUS_NAMES = ["LOAD", "PENDING", "POSTED", "EXCLUDED"];
+
 const DESCRIPTIONS = [
   "Monthly subscription",
   "Office supplies purchase",
@@ -64,6 +66,12 @@ async function main() {
   await prisma.account.deleteMany();
   await prisma.vendor.deleteMany();
   await prisma.client.deleteMany();
+  await prisma.transactionStatus.deleteMany();
+
+  // Transaction statuses (global, enum-like reference data).
+  const statuses = await Promise.all(
+    STATUS_NAMES.map((name) => prisma.transactionStatus.create({ data: { name } }))
+  );
 
   let txSeed = 0;
 
@@ -108,6 +116,7 @@ async function main() {
             match_id: t % 4 === 0 ? `match-${bankAccount.id}-${t}` : null,
             vendor: t % 2 === 0 ? pick(VENDOR_NAMES, txSeed) : null,
             qbo_id: `qbo-${txSeed}`,
+            status_id: pick(statuses, txSeed).id,
             // Predicted categories: split the amount across 1–2 GL accounts.
             categories: {
               create:
