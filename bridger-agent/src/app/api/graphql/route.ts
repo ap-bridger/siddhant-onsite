@@ -18,12 +18,22 @@ const { handleRequest } = createYoga({
         name: String!
       }
 
+      type TransactionCategory {
+        id: ID!
+        accountId: ID!
+        amountCents: Int!
+      }
+
       type Transaction {
         id: ID!
         qboId: String
         date: String!
         description: String!
         amountCents: Int!
+        pair: String
+        match: String
+        vendor: String
+        categories: [TransactionCategory!]!
       }
 
       type Query {
