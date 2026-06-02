@@ -29,7 +29,7 @@ const VENDOR_NAMES = [
   "Uber",
 ];
 
-const STATUS_NAMES = ["LOAD", "PENDING", "POSTED", "EXCLUDED"];
+const STATUS_NAMES = ["LOADED", "PENDING", "POSTED", "EXCLUDED"];
 
 const DESCRIPTIONS = [
   "Monthly subscription",
