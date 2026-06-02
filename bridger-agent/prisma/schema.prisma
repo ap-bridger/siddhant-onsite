@@ -12,6 +12,8 @@ model Client {
   name String
 
   bankAccounts BankAccount[]
+  accounts     Account[]
+  vendors      Vendor[]
 }
 
 model BankAccount {
@@ -25,15 +27,20 @@ model BankAccount {
 
 // Notably different from BankAccount
 model Account {
-  id   String @id @default(cuid())
-  name String
+  id        String @id @default(cuid())
+  name      String
+  client_id String
 
+  client              Client              @relation(fields: [client_id], references: [id])
   predictedCategories PredictedCategory[]
 }
 
 model Vendor {
-  id   String @id @default(cuid())
-  name String
+  id        String @id @default(cuid())
+  name      String
+  client_id String
+
+  client Client @relation(fields: [client_id], references: [id])
 }
 
 model Transaction {

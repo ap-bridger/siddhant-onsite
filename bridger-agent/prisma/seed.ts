@@ -61,23 +61,27 @@ async function main() {
   await prisma.predictedCategory.deleteMany();
   await prisma.transaction.deleteMany();
   await prisma.bankAccount.deleteMany();
-  await prisma.client.deleteMany();
   await prisma.account.deleteMany();
   await prisma.vendor.deleteMany();
-
-  // GL accounts & vendors (shared across clients).
-  const accounts = await Promise.all(
-    ACCOUNT_NAMES.map((name) => prisma.account.create({ data: { name } }))
-  );
-
-  await Promise.all(
-    VENDOR_NAMES.map((name) => prisma.vendor.create({ data: { name } }))
-  );
+  await prisma.client.deleteMany();
 
   let txSeed = 0;
 
   for (const clientName of CLIENT_NAMES) {
     const client = await prisma.client.create({ data: { name: clientName } });
+
+    // GL accounts & vendors are scoped to a client.
+    const accounts = await Promise.all(
+      ACCOUNT_NAMES.map((name) =>
+        prisma.account.create({ data: { name, client_id: client.id } })
+      )
+    );
+
+    await Promise.all(
+      VENDOR_NAMES.map((name) =>
+        prisma.vendor.create({ data: { name, client_id: client.id } })
+      )
+    );
 
     // 3 bank accounts per client.
     for (let b = 0; b < 3; b++) {
