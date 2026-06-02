@@ -45,6 +45,7 @@ CREATE TABLE "Transaction" (
     "pair_id" TEXT,
     "match_id" TEXT,
     "vendor" TEXT,
+    "qbo_id" TEXT,
     CONSTRAINT "Transaction_bank_account_id_fkey" FOREIGN KEY ("bank_account_id") REFERENCES "BankAccount" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Transaction_pair_id_fkey" FOREIGN KEY ("pair_id") REFERENCES "Transaction" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
