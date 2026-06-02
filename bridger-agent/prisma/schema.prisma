@@ -7,6 +7,60 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model Greet {
-  id Int @id @default(autoincrement())
+model Client {
+  id   String @id @default(cuid())
+  name String
+
+  bankAccounts BankAccount[]
+}
+
+model BankAccount {
+  id        String @id @default(cuid())
+  name      String
+  client_id String
+
+  client       Client        @relation(fields: [client_id], references: [id])
+  transactions Transaction[]
+}
+
+// Notably different from BankAccount
+model Account {
+  id   String @id @default(cuid())
+  name String
+
+  predictedCategories PredictedCategory[]
+}
+
+model Vendor {
+  id   String @id @default(cuid())
+  name String
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  bank_account_id String
+  date            DateTime
+  description     String
+  amount_cents    Int
+  pair_id         String?  @unique
+  match_id        String?
+  vendor          String?
+  qbo_id          String?
+
+  bankAccount BankAccount @relation(fields: [bank_account_id], references: [id])
+
+  // Self-relation: a transaction may be paired with another transaction.
+  pair       Transaction?        @relation("TransactionPair", fields: [pair_id], references: [id])
+  pairedBy   Transaction?        @relation("TransactionPair")
+  categories PredictedCategory[]
+}
+
+model PredictedCategory {
+  id             String @id @default(cuid())
+  account_id     String
+  amount_cents   Int
+  transaction_id String
+
+  account     Account     @relation(fields: [account_id], references: [id])
+  transaction Transaction @relation(fields: [transaction_id], references: [id])
 }
