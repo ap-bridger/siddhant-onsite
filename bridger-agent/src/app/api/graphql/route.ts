@@ -1,7 +1,7 @@
-import { getPendingTransactions } from "@/server/modules/accounts/api";
 import {
   getClientCategories,
   getClientVendors,
+  getPendingTransactions,
 } from "@/server/modules/clients/api";
 import { createSchema, createYoga } from "graphql-yoga";
 
@@ -39,7 +39,7 @@ const { handleRequest } = createYoga({
       type Query {
         clientCategories(clientId: ID!): [Category!]!
         clientVendors(clientId: ID!): [Vendor!]!
-        accountPending(bankAccountId: ID!): [Transaction!]!
+        accountPending(clientId: ID!): [Transaction!]!
       }
     `,
     resolvers: {
@@ -48,8 +48,8 @@ const { handleRequest } = createYoga({
           getClientCategories(args.clientId),
         clientVendors: (_parent: unknown, args: { clientId: string }) =>
           getClientVendors(args.clientId),
-        accountPending: (_parent: unknown, args: { bankAccountId: string }) =>
-          getPendingTransactions(args.bankAccountId),
+        accountPending: (_parent: unknown, args: { clientId: string }) =>
+          getPendingTransactions(args.clientId),
       },
     },
   }),
