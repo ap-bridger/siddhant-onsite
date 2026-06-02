@@ -45,6 +45,7 @@ model Transaction {
   pair_id         String?  @unique
   match_id        String?
   vendor          String?
+  qbo_id          String?
 
   bankAccount BankAccount @relation(fields: [bank_account_id], references: [id])
 

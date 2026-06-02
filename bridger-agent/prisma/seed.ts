@@ -103,6 +103,7 @@ async function main() {
             // Give some transactions a (non-FK) match id and a vendor.
             match_id: t % 4 === 0 ? `match-${bankAccount.id}-${t}` : null,
             vendor: t % 2 === 0 ? pick(VENDOR_NAMES, txSeed) : null,
+            qbo_id: `qbo-${txSeed}`,
             // Predicted categories: split the amount across 1–2 GL accounts.
             categories: {
               create:
