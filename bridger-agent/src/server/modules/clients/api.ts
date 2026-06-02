@@ -114,3 +114,22 @@ export const getPendingTransactions = async (
     return b.date.localeCompare(a.date);
   });
 };
+
+export const createVendor = async (
+  clientId: string,
+  name: string,
+): Promise<Vendor> => {
+  await assertClientExists(clientId);
+
+  const trimmed = name.trim();
+  if (!trimmed) {
+    throw new GraphQLError("Vendor name must not be empty.", {
+      extensions: { code: "INVALID_VENDOR_NAME" },
+    });
+  }
+
+  return prisma.vendor.create({
+    data: { name: trimmed, client_id: clientId },
+    select: { id: true, name: true },
+  });
+};
